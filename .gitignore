@@ -1,0 +1,53 @@
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# python
+.venv
+.env
+ollama
+scripts
+.idea
+
+
+# Compiled output
+/train_ui/dist
+/train_ui/tmp
+/train_ui/out-tsc
+/train_ui/bazel-out
+
+# Node
+/train_ui/node_modules
+/train_ui/npm-debug.log
+/train_ui/yarn-error.log
+
+# IDEs and editors
+/train_ui/.idea/
+/train_ui/.project
+/train_ui/.classpath
+/train_ui/.c9/
+.train_ui/*.launch
+/train_ui/.settings/
+/train_ui/*.sublime-workspace
+
+# Visual Studio Code
+/train_ui/.vscode/*
+!/train_ui/.vscode/settings.json
+!/train_ui/.vscode/tasks.json
+!/train_ui/.vscode/launch.json
+!/train_ui/.vscode/extensions.json
+/train_ui/.history/*
+
+# Miscellaneous
+/train_ui/.angular/cache
+/train_ui/.sass-cache/
+/train_ui/connect.lock
+/train_ui/coverage
+/train_ui/libpeerconnection.log
+/train_ui/testem.log
+/train_ui/typings
+
+# System files
+/train_ui/.DS_Store
+/train_ui/Thumbs.db
+
+# Python
+/train_ui/.env

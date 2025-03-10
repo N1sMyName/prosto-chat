@@ -1,0 +1,5 @@
+- run db in docker /scripts/run.bash or /scripts/start.bash
+- start ollama server localhost:11434
+- pip install -r requirements.txt(if not installed)
+- run server server.py
+- run ui ~/xcode/db-ui
