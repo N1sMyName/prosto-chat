@@ -17,42 +17,45 @@ class Database:
         self.password = os.getenv('DB_PASSWORD')
         self.database = 'master'
         self.connection_string = f'DRIVER=ODBC Driver 17 for SQL Server;SERVER={self.server},{self.port};UID={self.user};PWD={self.password};DATABASE={self.database}'
-        self.connection = None
 
     async def connect(self):
         try:
-            self.connection = await aioodbc.connect(dsn=self.connection_string, loop=asyncio.get_event_loop())
+            connection = await aioodbc.connect(dsn=self.connection_string, loop=asyncio.get_event_loop())
             print("Connection successful")
+            return connection
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Connection failed: {e}")
+            return None
 
-    async def disconnect(self):
-        if self.connection:
-            await self.connection.close()
+    async def disconnect(self, connection):
+        if connection:
+            await connection.close()
             print("Connection closed")
 
     async def execute_query(self, query_object: SQLQuery):
-        if not self.connection:
-            await self.connect()
+        connection = await self.connect()
+        if not connection:
+            return jsonify({'success': False, 'message': 'Failed to establish database connection'}), 500
         try:
-            async with self.connection.cursor() as cursor:
+            async with connection.cursor() as cursor:
                 if query_object.params:
                     await cursor.execute(query_object.query, query_object.params)
                 else:
                     await cursor.execute(query_object.query)
-                await self.connection.commit()
-                return jsonify({'success': True, 'message': 'Entry created successfully'}), 201
+                await connection.commit()
+                return jsonify({'success': True, 'message': query_object.message}), 201
         except Exception as e:
             print(f"Error: {e}")
             return jsonify({'success': False, 'message': str(e)}), 500
         finally:
-            await self.disconnect();
+            await self.disconnect(connection)
 
     async def fetch_query(self, query_object: SQLQuery):
-        if not self.connection:
-            await self.connect()
+        connection = await self.connect()
+        if not connection:
+            return jsonify({'success': False, 'message': 'Failed to establish database connection'}), 500
         try:
-            async with self.connection.cursor() as cursor:
+            async with connection.cursor() as cursor:
                 if query_object.params:
                     await cursor.execute(query_object.query, query_object.params)
                 else:
@@ -64,7 +67,7 @@ class Database:
             print(f"Error: {e}")
             return jsonify({'success': False, 'message': str(e)}), 500
         finally:
-            await self.disconnect()
+            await self.disconnect(connection)
 
     @staticmethod
     def row_to_dict(row, cursor):
